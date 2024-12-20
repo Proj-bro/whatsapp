@@ -180,3 +180,27 @@ function downloadReport() {
     link.click();
     console.log("Report downloaded successfully.");
 }
+
+// Function to save global text and image in localStorage
+function saveTextAndImage() {
+    const text = document.getElementById("globalText").value;
+    const image = document.getElementById("globalImage").value;
+
+    if (!text) {
+        alert("Text message is required to save.");
+        return;
+    }
+
+    localStorage.setItem("global_text", text);
+    localStorage.setItem("global_image", image);
+
+    alert("Global text and image saved successfully!");
+}
+
+// Function to remove global text and image from localStorage
+function removeTextAndImage() {
+    localStorage.removeItem("global_text");
+    localStorage.removeItem("global_image");
+
+    alert("Global text and image removed successfully!");
+}
