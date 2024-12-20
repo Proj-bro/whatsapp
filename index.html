@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Marketing Push</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>WhatsApp Marketing Push</h1>
+
+        <!-- Global Inputs for Text and Image -->
+        <div class="global-inputs">
+            <h3>Global Input for Text and Image</h3>
+            <textarea id="globalText" placeholder="Enter text message here..."></textarea>
+            <input type="text" id="globalImage" placeholder="Enter image URL (optional)">
+            <button onclick="saveTextAndImage()">Save Global Text and Image</button>
+            <button onclick="removeTextAndImage()">Remove Global Text and Image</button>
+        </div>
+
+        <!-- Controls for Import and Actions -->
+        <div class="controls">
+            <input type="file" id="importContacts" accept=".csv">
+            <button onclick="downloadReport()">Download Report</button>
+            <button onclick="sendSelected()">Send Selected</button>
+            <button onclick="sendAll()">Send All</button>
+        </div>
+
+        <!-- Manual Record Addition Form -->
+        <div class="manual-record">
+            <h3>Add Record Manually</h3>
+            <form id="manualForm">
+                <input type="text" id="manualName" placeholder="Name" required>
+                <input type="text" id="manualMobile" placeholder="Mobile Number" required>
+                <input type="text" id="manualGroup" placeholder="Group Name">
+                <button type="button" onclick="addManualRecord()">Add Record</button>
+            </form>
+        </div>
+
+        <!-- Contacts Table -->
+        <table id="contactsTable">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Row</th>
+                    <th>Name</th>
+                    <th>Mobile Number</th>
+                    <th>Status</th>
+                    <th>Created Timestamp</th>
+                    <th>Updated Timestamp</th>
+                    <th>Response</th>
+                    <!-- New field -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Contacts will be dynamically added here -->
+            </tbody>
+        </table>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
