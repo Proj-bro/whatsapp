@@ -23,9 +23,10 @@ document.getElementById("importContacts").addEventListener("change", (event) => 
                         status: "created",
                         createdAt: new Date().toLocaleString(),
                         updatedAt: "",
-                        text: "", // Store text for this contact
-                        image: "" // Store image for this contact
+                        response: "" // Store full API response
                     });
+
+                    console.log(`Added contact: ${name} (${mobile}), Group: ${group}`);
                 }
             });
             updateTable(); // Refresh the table with updated contacts
@@ -60,38 +61,19 @@ function addManualRecord() {
         status: "created",
         createdAt: new Date().toLocaleString(),
         updatedAt: "",
-        text,
-        image
+        response: "" // Store full API response
     });
 
+    console.log(`Manually added contact: ${name} (${mobile}), Group: ${group}`);
     updateTable();
 
     // Reset form fields
     document.getElementById("manualForm").reset();
 }
 
-// Save Text and Image to local storage
-function saveTextAndImage() {
-    const text = document.getElementById("globalText").value;
-    const image = document.getElementById("globalImage").value;
-
-    // Store global values in localStorage for future use
-    localStorage.setItem('global_text', text);
-    localStorage.setItem('global_image', image);
-
-    alert("Global Text and Image saved to local storage.");
-}
-
-// Remove Text and Image from local storage
-function removeTextAndImage() {
-    localStorage.removeItem('global_text');
-    localStorage.removeItem('global_image');
-
-    alert("Global Text and Image removed from local storage.");
-}
-
 // Update the table with the current contacts data (including API response display)
 function updateTable() {
+    console.log("Updating the contacts table...");
     const tableBody = document.getElementById("contactsTable").querySelector("tbody");
     tableBody.innerHTML = "";
     contacts.forEach((contact, index) => {
@@ -110,6 +92,7 @@ function updateTable() {
         </tr>
         `;
     });
+    console.log("Table updated successfully.");
 }
 
 // Updated sendMessage function to save full API response
@@ -123,6 +106,7 @@ async function sendMessage(contact, index) {
         `https://api.textmebot.com/send.php?recipient=${contact.mobile}&apikey=THtedubUj8zV&text=${formattedText}`;
 
     contacts[index].status = "processing";
+    console.log(`Sending message to: ${contact.name} (${contact.mobile})`);
     updateTable();
 
     try {
@@ -131,6 +115,7 @@ async function sendMessage(contact, index) {
 
         // Save the full API response
         contacts[index].response = responseText;
+        console.log(`Response for ${contact.name} (${contact.mobile}):`, responseText);
 
         const resultMatch = responseText.match(/Result:\s*<b>(.*?)<\/b>/);
         if (resultMatch) {
@@ -145,6 +130,7 @@ async function sendMessage(contact, index) {
         contacts[index].status = "failed";
     } finally {
         contacts[index].updatedAt = new Date().toLocaleString();
+        console.log(`Updated status for ${contact.name} (${contact.mobile}): ${contacts[index].status}`);
         updateTable();
     }
 }
@@ -153,12 +139,13 @@ async function sendMessage(contact, index) {
 function sendSelected() {
     const selectedIndexes = Array.from(document.querySelectorAll("input[type='checkbox']:checked"))
         .map((checkbox) => parseInt(checkbox.dataset.index));
+    console.log("Selected contacts for sending:", selectedIndexes);
     sendMessages(selectedIndexes);
 }
 
 // Function to send messages to all contacts
 async function sendAll() {
-    // Ensure the function waits for each message to finish before sending the next
+    console.log("Sending messages to all contacts...");
     await sendMessages(contacts.map((_, index) => index));
 }
 
@@ -168,19 +155,22 @@ async function sendMessages(indexes) {
     sending = true;
 
     for (let index of indexes) {
+        console.log(`Processing contact at index: ${index}`);
         await sendMessage(contacts[index], index); // Wait for each message to be sent
         // Optional: You can introduce a delay if needed to avoid overloading the API
         await new Promise(resolve => setTimeout(resolve, 10000)); // Uncomment for 5 seconds delay
     }
 
     sending = false; // Reset sending flag after all messages are sent
+    console.log("All messages sent.");
 }
 
 // Function to download the report as a CSV file
 function downloadReport() {
+    console.log("Downloading the report...");
     const csvContent = [
-        ["Row", "Name", "Mobile Number", "Status", "Created Timestamp", "Updated Timestamp"].join(","),
-        ...contacts.map(contact => [contact.row, contact.name, contact.mobile, contact.status, contact.createdAt, contact.updatedAt].join(","))
+        ["Row", "Name", "Mobile Number", "Status", "Created Timestamp", "Updated Timestamp", "Response"].join(","),
+        ...contacts.map(contact => [contact.row, contact.name, contact.mobile, contact.status, contact.createdAt, contact.updatedAt, contact.response].join(","))
     ].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -188,5 +178,5 @@ function downloadReport() {
     link.href = URL.createObjectURL(blob);
     link.download = "report.csv";
     link.click();
-
+    console.log("Report downloaded successfully.");
 }
