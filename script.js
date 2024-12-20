@@ -119,8 +119,8 @@ async function sendMessage(contact, index) {
 
     const formattedText = encodeURIComponent(text.replace(/\n/g, "\n"));
     const url = image ?
-        `http://api.textmebot.com/send.php?recipient=${contact.mobile}&apikey=THtedubUj8zV&text=${formattedText}&file=${encodeURIComponent(image)}` :
-        `http://api.textmebot.com/send.php?recipient=${contact.mobile}&apikey=THtedubUj8zV&text=${formattedText}`;
+        `https://api.textmebot.com/send.php?recipient=${contact.mobile}&apikey=THtedubUj8zV&text=${formattedText}&file=${encodeURIComponent(image)}` :
+        `https://api.textmebot.com/send.php?recipient=${contact.mobile}&apikey=THtedubUj8zV&text=${formattedText}`;
 
     contacts[index].status = "processing";
     updateTable();
